@@ -173,7 +173,7 @@ dialogModule.provider("$dialog", function(){
       if(this.options.dialogFade){
         elements.push(this.modalEl);
       }
-      if(this.options.backdropFade){
+      if(this.options.backdropFade && activeBackdrops.value === 1 ){
         elements.push(this.backdropEl);
       }
 
