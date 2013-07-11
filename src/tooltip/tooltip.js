@@ -36,7 +36,7 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
    *     $tooltipProvider.options( { placement: 'left' } );
    *   });
    */
-	this.options = function( value ) {
+  this.options = function( value ) {
 		angular.extend( globalOptions, value );
 	};
 
@@ -103,13 +103,15 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
 
       var startSym = $interpolate.startSymbol();
       var endSym = $interpolate.endSymbol();
+      //add manual-hide attribute for the button in the tooltip to hide the tooltip
       var template = 
         '<'+ directiveName +'-popup '+
           'title="'+startSym+'tt_title'+endSym+'" '+
           'content="'+startSym+'tt_content'+endSym+'" '+
           'placement="'+startSym+'tt_placement'+endSym+'" '+
           'animation="tt_animation()" '+
-          'is-open="tt_isOpen"'+
+          'is-open="tt_isOpen" '+
+          'manual-hide="Hide()" ' +
           '>'+
         '</'+ directiveName +'-popup>';
 
@@ -118,6 +120,14 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
         scope: true,
         link: function link ( scope, element, attrs ) {
           var tooltip = $compile( template )( scope );
+          tooltip.show = function (){
+            this.css({ display: 'block'});
+          };
+          tooltip.hide = function (){
+              this.css({ display: 'none'});
+          };
+          
+          var isTooltipExist = false;
           var transitionTimeout;
           var popupTimeout;
           var $body;
@@ -173,11 +183,16 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
             
             // Now we add it to the DOM because need some info about it. But it's not 
             // visible yet anyway.
-            if ( appendToBody ) {
-                $body = $body || $document.find( 'body' );
-                $body.append( tooltip );
-            } else {
-              element.after( tooltip );
+            // if tooltip is created, just show the old instance
+            if (!isTooltipExist) {
+                if ( appendToBody ) {
+                    $body = $body || $document.find( 'body' );
+                    $body.append( tooltip );
+                } else {
+                    element.after( tooltip );
+                }
+            } else {            
+              tooltip.show();
             }
 
             // Get the position of the directive element.
@@ -245,12 +260,14 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
             // need to wait for it to expire beforehand.
             // FIXME: this is a placeholder for a port of the transitions library.
             if ( angular.isDefined( scope.tt_animation ) && scope.tt_animation() ) {
-              transitionTimeout = $timeout( function () { tooltip.remove(); }, 500 );
+              transitionTimeout = $timeout( function () { tooltip.hide(); }, 500 );
             } else {
-              tooltip.remove();
+            	//just hide the tooltip instead of remove it, otherwise tooltip need to compile again
+              tooltip.hide();
             }
           }
-
+          //expose the function to scope 
+ 	  scope.Hide = hide;
           /**
            * Observe the relevant attributes.
            */
@@ -309,7 +326,8 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
             if ( scope.tt_isOpen ) {
               hide();
             } else {
-              tooltip.remove();
+              // Not sure if we should use hide or remove here. if we use remove, tooltip need to recompile
+              tooltip.hide();
             }
           });
         }
