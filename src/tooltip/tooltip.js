@@ -36,9 +36,9 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
    *     $tooltipProvider.options( { placement: 'left' } );
    *   });
    */
-  this.options = function( value ) {
-		angular.extend( globalOptions, value );
-	};
+    this.options = function( value ) {
+        angular.extend( globalOptions, value );
+    };
 
   /**
    * This allows you to extend the set of trigger mappings available. E.g.:
@@ -103,30 +103,22 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
 
       var startSym = $interpolate.startSymbol();
       var endSym = $interpolate.endSymbol();
-      //add manual-hide attribute for the button in the tooltip to hide the tooltip
       var template = 
-        '<'+ directiveName +'-popup '+
-          'title="'+startSym+'tt_title'+endSym+'" '+
-          'content="'+startSym+'tt_content'+endSym+'" '+
-          'placement="'+startSym+'tt_placement'+endSym+'" '+
-          'animation="tt_animation()" '+
-          'is-open="tt_isOpen" '+
-          'manual-hide="Hide()" ' +
-          '>'+
-        '</'+ directiveName +'-popup>';
+       '<div ' + directiveName + '-popup ' +
+                      'title="' + startSym + 'tt_title' + endSym + '" ' +
+                      'content="' + startSym + 'tt_content' + endSym + '" ' +
+                      'placement="' + startSym + 'tt_placement' + endSym + '" ' +
+                      'animation="tt_animation()" ' +
+                      'is-open="tt_isOpen" ' +
+                      'manual-hide="Hide()" ' +
+                      '>' +
+                    '</div>';
 
       return {
         restrict: 'EA',
         scope: true,
         link: function link ( scope, element, attrs ) {
           var tooltip = $compile( template )( scope );
-          tooltip.show = function (){
-            this.css({ display: 'block'});
-          };
-          tooltip.hide = function (){
-              this.css({ display: 'none'});
-          };
-          
           var isTooltipExist = false;
           var transitionTimeout;
           var popupTimeout;
@@ -191,8 +183,8 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
                 } else {
                     element.after( tooltip );
                 }
-            } else {            
-              tooltip.show();
+            } else {
+                tooltip.show();
             }
 
             // Get the position of the directive element.
@@ -262,12 +254,12 @@ angular.module( 'ui.bootstrap.tooltip', [ 'ui.bootstrap.position' ] )
             if ( angular.isDefined( scope.tt_animation ) && scope.tt_animation() ) {
               transitionTimeout = $timeout( function () { tooltip.hide(); }, 500 );
             } else {
-            	//just hide the tooltip instead of remove it, otherwise tooltip need to compile again
+                //just hide the tooltip instead of remove it, otherwise tooltip need to compile again
               tooltip.hide();
             }
           }
           //expose the function to scope 
- 	  scope.Hide = hide;
+      scope.Hide = hide;
           /**
            * Observe the relevant attributes.
            */
