@@ -15,8 +15,10 @@ angular.module('ui.bootstrap.pagination', [])
 
     if ($attrs.itemsPerPage) {
       $scope.$parent.$watch($parse($attrs.itemsPerPage), function(value) {
-        self.itemsPerPage = parseInt(value, 10);
-        $scope.totalPages = self.calculateTotalPages();
+        if(!!value){
+          self.itemsPerPage = parseInt(value, 10);
+          $scope.totalPages = self.calculateTotalPages();
+        }
       });
     } else {
       this.itemsPerPage = config.itemsPerPage;
