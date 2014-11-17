@@ -249,6 +249,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
           backdropScope.index = currBackdropIndex;
           var angularBackgroundDomEl = angular.element('<div modal-backdrop></div>');
           angularBackgroundDomEl.attr('backdrop-class', modal.backdropClass);
+          angularBackgroundDomEl.css('height', body[0].scrollHeight + 'px');
           backdropDomEl = $compile(angularBackgroundDomEl)(backdropScope);
           body.append(backdropDomEl);
         }
