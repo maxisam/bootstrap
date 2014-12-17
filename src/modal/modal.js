@@ -75,7 +75,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
     };
   }])
 
-  .directive('modalWindow', ['$modalStack', '$timeout', function ($modalStack, $timeout) {
+  .directive('modalWindow', ['$modalStack', '$timeout', '$document', function ($modalStack, $timeout, $document) {
     return {
       restrict: 'EA',
       scope: {
@@ -106,6 +106,7 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.transition'])
           if (!element[0].querySelectorAll('[autofocus]').length) {
             element[0].focus();
           }
+          angular.element($document[0].querySelectorAll('div.modal-backdrop')).css('height',element[0].scrollHeight + 'px');
         });
 
         scope.close = function (evt) {
